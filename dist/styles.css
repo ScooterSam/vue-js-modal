@@ -143,6 +143,10 @@
   font: inherit;
   outline: none;
 }
+.vue-dialog-button:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
 .vue-dialog-button:hover {
   background: rgba(0, 0, 0, 0.01);
 }
