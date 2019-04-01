@@ -37,8 +37,9 @@
         :style="buttonStyle"
         :key="i"
         v-html="button.title"
+		:disabled="(button.async && button.isLoading)"
         @click.stop="click(i, $event)">
-        {{button.title}}
+        <span v-if="(button.async && button.isLoading)" :class="button.loaderClass"></span>{{button.title}}
       </button>
     </div>
     <div v-else class="vue-dialog-buttons-none"></div>
@@ -98,7 +99,20 @@ export default {
       const button = this.buttons[i]
 
       if (button && typeof button.handler === 'function') {
-        button.handler(button, i, event, { source })
+		if(button.isLoading === undefined && button.async) {
+			button.isLoading = true;
+	  	} 
+		if(button.async) {
+			button.handler(button, i, event, { source })
+				.then(() => {
+					button.isLoading = false;
+				})
+				.catch(error => {
+					console.error(error);
+					button.isLoading = false;
+				})
+		} else
+        	button.handler(button, i, event, { source })
       } else {
         this.$modal.hide('dialog')
       }
@@ -168,6 +182,11 @@ export default {
   color: inherit;
   font: inherit;
   outline: none;
+}
+
+.vue-dialog-button:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
 }
 
 .vue-dialog-button:hover {
