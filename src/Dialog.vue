@@ -98,7 +98,7 @@ export default {
       const button = this.buttons[i]
 
       if (button && typeof button.handler === 'function') {
-        button.handler(i, event, { source })
+        button.handler(button, i, event, { source })
       } else {
         this.$modal.hide('dialog')
       }
